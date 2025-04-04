@@ -214,9 +214,9 @@ function createTabItem {
                 if($_ -match "$($CONF.TextDecorationSuffix)") {
                     Set-Clipboard $this.SelectedCells[0].Item.("$($CONF.TextDecorationPrefix)" + $this.SelectedCells.Column.Header + "$($CONF.TextDecorationSuffix)")
                 }
-            } elseif($_ -match "start_process_") {
-            if($_ -eq "start_process_" + $this.SelectedCells.Column.Header) {
-                Start-Process $this.SelectedCells[0].Item.("start_process_" + $this.SelectedCells.Column.Header)
+            } elseif($_ -match "$($CONF.StartProcessPrefix)") {
+            if($_ -eq "$($CONF.StartProcessPrefix)" + $this.SelectedCells.Column.Header) {
+                Start-Process $this.SelectedCells[0].Item.("$($CONF.StartProcessPrefix)" + $this.SelectedCells.Column.Header)
             }
             } else {
                 Set-Clipboard $this.SelectedCells[0].Item.($this.SelectedCells.Column.Header)
@@ -299,7 +299,9 @@ function addInputButton {
         $this.parent.parent.findName("DataGrid").Columns | ForEach-Object {
             $style = New-Object System.Windows.Style([System.Windows.Controls.TextBlock])
             $style.Setters.Add((New-Object System.Windows.Setter([System.Windows.Controls.TextBlock]::TextWrappingProperty, [System.Windows.TextWrapping]::Wrap)))
-            $_.ElementStyle = $style
+            if($_.psobject.properties.match('ElementStyle').Count) {
+                $_.ElementStyle = $style
+            }
         }
     })
     
@@ -375,7 +377,9 @@ function addTextBox {
             $sender.parent.parent.findName("DataGrid").Columns | ForEach-Object {
                 $style = New-Object System.Windows.Style([System.Windows.Controls.TextBlock])
                 $style.Setters.Add((New-Object System.Windows.Setter([System.Windows.Controls.TextBlock]::TextWrappingProperty, [System.Windows.TextWrapping]::Wrap)))
-                $_.ElementStyle = $style
+                if($_.psobject.properties.match('ElementStyle').Count) {
+                    $_.ElementStyle = $style
+                }
             }
 		}
 
@@ -1130,12 +1134,12 @@ function initDataGrid {
 "@
             $col= [Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $ColXAML))
             $DataGrid.Columns.Add($col)
-        } elseif($_ -match "start_process_") {
+        } elseif($_ -match "$($CONF.StartProcessPrefix)") {
             [xml]$ColXAML = @"
 <DataGridTemplateColumn
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Header="$(($_.ToString()).Replace("start_process_",""))" ClipboardContentBinding="{Binding $($_.ToString())}" SortMemberPath="$($_.ToString() + "_linkText")" >
+        Header="$(($_.ToString()).Replace("$($CONF.StartProcessPrefix)",""))" ClipboardContentBinding="{Binding $($_.ToString())}" SortMemberPath="$($_.ToString() + "_linkText")" >
 
     <DataGridTemplateColumn.CellTemplate>
         <DataTemplate>
@@ -1195,7 +1199,7 @@ function initDataGrid {
             if($_ -match "$($CONF.TextDecorationPrefix)") {
                 $new_row | Add-Member -MemberType NoteProperty -Name ($_.ToString() + "$($CONF.TextDecorationSuffix)") -Value (text2Plain $row[$_])
                 $new_row | Add-Member -MemberType NoteProperty -Name $_ -Value (text2Img $row[$_])
-            } elseif($_ -match "start_process_") {
+            } elseif($_ -match "$($CONF.StartProcessPrefix)") {
                 $link_data = ParseLink($row[$_])
                 $new_row | Add-Member -MemberType NoteProperty -Name $_ -Value $link_data.link
                 $new_row | Add-Member -MemberType NoteProperty -Name ($_.ToString() + "_linkText") -Value $link_data.link_text
