@@ -1,5 +1,7 @@
 # TwoThreee
 PowerShellとWPFを使用してカスタムDataGridを作成し、データを表示するGUIツールです。
+![image](https://github.com/user-attachments/assets/7ae89850-83ae-4e9b-b518-410f8b09cfe3)
+
 
 ## 主な機能
 - **SQLファイルの読み込みと実行**  
