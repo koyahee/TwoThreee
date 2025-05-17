@@ -12,10 +12,13 @@ PowerShellとWPFを使用してカスタムDataGridを作成し、データを�
 ## 使用方法
 ### バッチファイルから起動
 同じディレクトリのバッチファイルに以下の内容を記述し、実行します。
+引数にsqlフォルダ内のSQLファイルのフルパスを渡すと、起動時に開きます。
 > powershell -WindowStyle Hidden -NoProfile -ExecutionPolicy Unrestricted .\main.ps1
+> powershell -WindowStyle Hidden -NoProfile -ExecutionPolicy Unrestricted .\main.ps1 "SQLファイルのフルパス"
 
 ### ショートカットから起動
 > C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Unrestricted <<ファイルパス\main.ps1>>
+> C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Unrestricted <<ファイルパス\main.ps1>> "SQLファイルのフルパス"
 
 へのショートカットを作成し、実行します。
 
