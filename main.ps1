@@ -1002,28 +1002,28 @@ function text2Img {
 
 function text2Icon($plain_text){
     
-        $fText = (New-Object System.Windows.Media.FormattedText(
-            $plain_text,
-            [System.Globalization.CultureInfo]::CurrentCulture,
-            [System.Windows.FlowDirection]::LeftToRight,
+    $fText = (New-Object System.Windows.Media.FormattedText(
+        $plain_text,
+        [System.Globalization.CultureInfo]::CurrentCulture,
+        [System.Windows.FlowDirection]::LeftToRight,
 #            (New-Object System.Windows.Media.Typeface($this.FontFamily)),#デフォルトのフォント
-            (New-Object System.Windows.Media.Typeface($CONF.Typeface)),
-            $this.FontSize,
-            #[System.Double]32,
-            (New-Object System.Windows.Media.SolidColorBrush([System.Windows.Media.Colors]::SkyBlue))
-            #$this.Foreground
-            ))
-    
-        $dv = New-Object System.Windows.Media.DrawingVisual
-        $drawContext = $dv.RenderOpen()
-        $drawContext.DrawText($fText, (New-Object System.Windows.Point(0, 0)))
-        $drawContext.Close();
-    
-        $bmp = New-Object System.Windows.Media.Imaging.RenderTargetBitmap(($fText.Width), ($fText.Height), 96, 96, [System.Windows.Media.PixelFormats]::Pbgra32);
-        $bmp.Render($dv);
-    
-        return [System.Windows.Media.Imaging.BitmapSource]$bmp
-    }
+        (New-Object System.Windows.Media.Typeface($CONF.Typeface)),
+        $this.FontSize,
+        #[System.Double]32,
+        (New-Object System.Windows.Media.SolidColorBrush([System.Windows.Media.Colors]::SkyBlue))
+        #$this.Foreground
+        ))
+
+    $dv = New-Object System.Windows.Media.DrawingVisual
+    $drawContext = $dv.RenderOpen()
+    $drawContext.DrawText($fText, (New-Object System.Windows.Point(0, 0)))
+    $drawContext.Close();
+
+    $bmp = New-Object System.Windows.Media.Imaging.RenderTargetBitmap(($fText.Width), ($fText.Height), 96, 96, [System.Windows.Media.PixelFormats]::Pbgra32);
+    $bmp.Render($dv);
+
+    return [System.Windows.Media.Imaging.BitmapSource]$bmp
+}
     
 function ParseLink {
     Param($str)
