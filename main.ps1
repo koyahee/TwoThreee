@@ -1055,7 +1055,7 @@ function ParseLink {
         # 画像ファイルが存在しなければalt属性を表示する
         if(-not (Test-Path $linkData)) {
             $LinkData.imgPath = ""
-            $LinkData.link_text = $Matches.alt
+            $LinkData.link_text = $LinkData.alt
         }
         
         if($url -match "(?<link>[^ ]+) `"(?<tooltip>[^`"]+)`"") {
