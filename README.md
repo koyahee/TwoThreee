@@ -1,5 +1,16 @@
 # TwoThreee
-PowerShellとWPFを使用してカスタムDataGridを作成し、データを表示するGUIツールです。
+PowerShellとWPFを使用してカスタムDataGridを作成し、データを表示するGUIツールです。  
+変数宣言が行われている場合、値をテキストボックス、又はコンボボックスから入力可能です。
+
+テキストボックスを表示
+> declare @name varchar(100);
+
+コンボボックスを表示
+> declare @value varchar(100); /* %:,One: One, Two: Two */
+
+何も表示しない（行頭にスペースがあれば無視します）
+>  [スペース]declare @not_used varchar(100);
+
 ![image](https://github.com/user-attachments/assets/7ae89850-83ae-4e9b-b518-410f8b09cfe3)
 
 
@@ -30,6 +41,7 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Hidden -N
 へのショートカットを作成し、実行します。
 
 # 環境
-以下の環境で動作確認済み。
-Windows 11 Pro 24H2
+以下の環境で動作確認済み。  
+Windows 11 Pro 24H2  
+Microsoft® SQL Server® 2022 Express
 
