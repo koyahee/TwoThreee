@@ -1036,7 +1036,9 @@ function ParseLink {
         tooltip = ""
     }
 
-    if($str -match "\[\!\[(?<alt>[^]]?)\]\((?<img>[^)]+)\)\]\((?<url>[^)+]+)\)") {
+    #リンク付き画像（Markdown記法）の場合
+    # [![alt属性](画像ファイルのパス)](URL)
+    if($str -match "\[\!\[(?<alt>[^]]+)\]\((?<img>[^)]+)\)\]\((?<url>[^)+]+)\)") {
         
         $LinkData.alt = $Matches.alt
         $img = $Matches.img
@@ -1061,6 +1063,8 @@ function ParseLink {
         } else {
             $LinkData.link = $url
         }
+    # リンク（Markdown記法）の場合
+    # [タイトル](URL)
     } elseif($str -match "\[(?<link_text>[^]]+)\]\((?<url>[^)+]+)\)") {
         $LinkData.link_text = $Matches.link_text
         $url = $Matches.url
@@ -1080,6 +1084,7 @@ function ParseLink {
     $LinkData.tooltip = $LinkData.link
     if($LinkData.imgPath -ne "") {
         $LinkData.link_text = ""
+        $LinkData.tooltip = $LinkData.alt
     }
 
     return $LinkData
