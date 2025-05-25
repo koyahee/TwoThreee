@@ -1,5 +1,11 @@
 declare @name varchar(100);
-set @name = '%kappa%';
+set @name = '';
+
+declare @value varchar(100); /* %:,One: One, Two: Two */
+set @value = '%';
+
+ declare @not_used varchar(100);
+ set @not_used = '%';
 
 declare @TEMPORARY TABLE (
     id INT PRIMARY KEY,
@@ -9,7 +15,7 @@ declare @TEMPORARY TABLE (
     start_process_StartProcess VARCHAR(255)
 );
 
-insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_process_StartProcess) values (1, 'alpha', 'One', '<span style="color:red;">red</span>','notepad');
+insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_process_StartProcess) values (1, 'alpha', 'One', '<span style="color:red;">red</span>','[![image not found](./img/image.png)](notepad)');
 insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_process_StartProcess) values (2, 'beta', 'Two', '<span style="color:blue;">blue</span>','notepad');
 insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_process_StartProcess) values (3, 'gamma', 'Three', '<span style="color:green;">green</span>','notepad');
 insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_process_StartProcess) values (4, 'delta', 'Four', '<span style="color:yellow;">yellow</span>','notepad');
@@ -36,4 +42,5 @@ insert into @TEMPORARY (id, name, value, text_decoration_TextDecolation, start_p
 
 select * from @TEMPORARY
 where name like '%' + @name + '%'
+and value like '%' + @value + '%'
 order by id asc;
