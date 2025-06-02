@@ -28,6 +28,13 @@ $INI_PATH = [System.IO.Path]::GetFullPath("$PSScriptRoot\config.ini")
 $CONF=@{}
 Get-Content -Encoding UTF8 $INI_PATH | ForEach-Object {$CONF += ConvertFrom-StringData $_}
 
+if($CONF.Debug) {
+	$DebugPreference = "Continue"
+}
+if($CONF.Verbose) {
+	$VerbosePreference = "Continue"
+}
+
 <# XAML にて Window 構築 #>
 [xml]$MainXAML = @"
 <Window
@@ -133,7 +140,7 @@ function createTabItem {
     
     $TabContent.findName("serverComboBox").add_SelectionChanged({
         if($this.SelectedIndex -ne -1) {
-            Write-Host " serverComboBox_SelectionChanged"
+            Write-Debug " serverComboBox_SelectionChanged"
 
             $t = @()
             @(Get-ChildItem -Filter * -Path ($SqlRootDir + "/" + $this.parent.findName("serverComboBox").SelectedItem)) | Where-Object { $_.Name -like "*.sql" -or $_.Attributes -match'Directory' } | ForEach-Object {
@@ -154,7 +161,7 @@ function createTabItem {
     
     $TabContent.findName("sqlComboBox1").add_SelectionChanged({
         if($this.SelectedIndex -ne -1) {
-            Write-Host " sqlComboBox1_SelectionChanged"
+            Write-Debug " sqlComboBox1_SelectionChanged"
             if($this.parent.findName("sqlComboBox1").SelectedItem -match("├")) {
                 $this.DataContext.SqlItems2 = @(Get-ChildItem -Filter *.sql -Path ($SqlRootDir + "/" + $this.parent.findName("serverComboBox").SelectedItem + "/" + ($this.parent.findName("sqlComboBox1").SelectedItem.Replace("├",""))))
             } else {
@@ -168,7 +175,7 @@ function createTabItem {
     
     $TabContent.findName("sqlComboBox2").add_SelectionChanged({
         if($this.SelectedIndex -ne -1) {
-            Write-Host " sqlComboBox2_SelectionChanged"
+            Write-Debug " sqlComboBox2_SelectionChanged"
         }
         updateComboBox $this.parent.parent
     })
@@ -273,7 +280,7 @@ $tabContainer.add_SelectionChanged({
 
 function addNewTab {
 
-    Write-Host "addNewTab"
+    Write-Debug "addNewTab"
 
     $count = $tabContainer.Items.Count
     $tabItem = createTabItem
@@ -409,7 +416,7 @@ function addTextBox {
 
 function initInputPanel {
     Param($Content, $params = $null)
-    Write-Host "initInputPanel"
+    Write-Debug "initInputPanel"
 
     $Content.findName("InputPanel").Children.Clear()
     
@@ -431,7 +438,7 @@ function initInputPanel {
 }
 function updateDataContext {
     Param($Content)
-    Write-Host "updateDataContext"
+    Write-Debug "updateDataContext"
 
     $Content.DataContext = [PSCustomObject]@{
         ServerItems = $Content.DataContext.ServerItems
@@ -445,7 +452,7 @@ function updateDataContext {
 
 function updateComboBox {
     Param($Content)
-    Write-Host "updateComboBox"
+    Write-Debug "updateComboBox"
     
     $Content.findName("InputPanel").Children.Clear()
     
@@ -456,22 +463,22 @@ function updateComboBox {
 
     $serverCombo = $Content.findName("serverComboBox")
     if($serverCombo.Items.Count -eq 1 -and $null -eq $serverCombo.SelectedItem) {
-        Write-Host ("　" + $serverCombo.Items[0].ToString() + "を選択しました")
+        Write-Debug ("　" + $serverCombo.Items[0].ToString() + "を選択しました")
         $serverCombo.SelectedIndex = 0
         return
     } elseif($serverCombo.Items.Count -eq 0) {
-        Write-Host ("serverComboをリセットしました")
+        Write-Debug ("serverComboをリセットしました")
         $serverCombo.SelectedIndex = $null
         return
     }
     
     $sqlCombo1 = $Content.findName("sqlComboBox1")
     if($sqlCombo1.Items.Count -eq 1 -and $null -eq $sqlCombo1.SelectedItem) {
-        Write-Host ("　" + $sqlCombo1.Items[0].ToString() + "を選択しました")
+        Write-Debug ("　" + $sqlCombo1.Items[0].ToString() + "を選択しました")
         $sqlCombo1.SelectedIndex = 0
         return
     } elseif($sqlCombo1.Items.Count -eq 0) {
-        Write-Host ("sqlCombo1をリセットしました")
+        Write-Debug ("sqlCombo1をリセットしました")
         $sqlCombo1.SelectedIndex = $null
         return
     }
@@ -480,7 +487,7 @@ function updateComboBox {
     if($sqlCombo2.Items.Count -gt 0) {
         $Content.findName("sqlSubPanel").Visibility = [System.Windows.Visibility]::Visible
         if($sqlCombo1.Items.Count -eq 1 -and $null -eq $sqlCombo2.SelectedItem) {
-            Write-Host ("　" + $sqlCombo2.Items[0].ToString() + "を選択しました")
+            Write-Debug ("　" + $sqlCombo2.Items[0].ToString() + "を選択しました")
             $sqlCombo2.SelectedIndex = 0
         }
     } else {
@@ -504,7 +511,7 @@ function updateComboBox {
 function openSql {
     Param($Content, $sqlFullPath)
 
-    Write-Host (" openSql " + $sqlFullPath)
+    Write-Debug (" openSql " + $sqlFullPath)
     
     $tabContainer = $window.findName("TabChildContainer")
     $tabContainer.SelectedItem.ToolTip = $sqlFullPath
@@ -615,7 +622,7 @@ function updateGrid {
 
     #udlファイルがあればSQL実行。なければフォームの内容を表示
     if(Test-Path (Join-Path ($SqlRootDir, $serverCombo.SelectedItem -join "\") "connect.udl")) {
-        Write-Host "connect.udl found"
+        Write-Debug "connect.udl found"
         return execQuery $Content
     } else {
         Write-Host "connect.udl not found"
@@ -626,7 +633,7 @@ function updateGrid {
 function execQuery {
     Param($Content)
     
-    Write-Host "execQuery"
+    Write-Debug "execQuery"
 	# 実行するSQL
     $tmpSQL = $Content.DataContext.strSQL
 #   フォームの内容を格納する変数
@@ -707,7 +714,7 @@ User ID=;
 function execQueryTest {
     Param($Content)
 
-    Write-Host "execQueryTest"
+    Write-Debug "execQueryTest"
     
 #   フォームの内容を格納する変数
     $params = [ordered]@{}
@@ -751,7 +758,7 @@ function execQueryTest {
 
 function trySelectCombo {
     Param($sqlFullPath)
-    Write-Host (" trySelectCombo " + $sqlFullPath)
+    Write-Debug (" trySelectCombo " + $sqlFullPath)
 
     $tabContainer = $window.findName("TabChildContainer")
     $tabContainer.SelectedItem.ToolTip = $sqlFullPath
@@ -1097,7 +1104,7 @@ function ParseLink {
 }
 function initDataGrid {
     Param($Content, $DT)
-    Write-Host "initDataGrid"
+    Write-Debug "initDataGrid"
     <#
     カラム名が「$($CONF.TextDecorationPrefix)」で始まる場合
     「$($CONF.TextDecorationPrefix)」をカットしてHeader名とする
