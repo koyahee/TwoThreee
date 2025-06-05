@@ -23,10 +23,31 @@ Add-Type -AssemblyName PresentationFramework  # WPF用
  
 [string]$SqlRootDir = $PSScriptRoot + "\sql"
 
-#設定読み込み
+# 設定ファイルのデフォルト値
+$CONF=@{
+	WindowHeight=500
+    WindowWidth=950
+    DataGridMaxColumnWidth=500
+    DataGridMinRowHeight=30
+    TextDecorationPrefix="text_decoration_"
+    TextDecorationSuffix="_bindingText"
+    StartProcessPrefix="start_process_"
+    Typeface="メイリオ"
+    IconText="🛠"
+    Title="TwoThree"
+    Debug=$false
+    Verbose=$false
+}
+# 設定ファイル読み込み
 $INI_PATH = [System.IO.Path]::GetFullPath("$PSScriptRoot\config.ini")
-$CONF=@{}
-Get-Content -Encoding UTF8 $INI_PATH | ForEach-Object {$CONF += ConvertFrom-StringData $_}
+if(Test-Path $INI_PATH) {
+	Get-Content -Encoding UTF8 $INI_PATH | ConvertFrom-StringData | ForEach-Object {
+		$hashTable = $_
+		$hashTable.Keys | ForEach-Object {
+			$CONF[$_] = $hashTable[$_]
+		}
+	}
+}
 
 if($CONF.Debug) {
 	$DebugPreference = "Continue"
