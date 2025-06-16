@@ -34,7 +34,7 @@ $CONF=@{
     StartProcessPrefix="start_process_"
     Typeface="メイリオ"
     IconText="🛠"
-    Title="TwoThree"
+    AppName="TwoThree"
     Debug=$false
     Verbose=$false
 }
@@ -61,7 +61,7 @@ if($CONF.Verbose) {
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="$($CONF.Title) $((Get-ItemProperty $PSCommandPath).LastWriteTime.ToString("yyyy/MM/dd") + "版")" Height="$($CONF.WindowHeight)" Width="$($CONF.WindowWidth)">
+    Title="{Binding Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="$($CONF.WindowHeight)" Width="$($CONF.WindowWidth)">
 
     <Window.Resources>
         <Style TargetType="DataGrid">
@@ -297,6 +297,10 @@ $tabContainer.add_SelectionChanged({
     if($index -eq ($count - 1)) {
         addNewTab
     }
+    
+    $window.DataContext = [PSCustomObject]@{
+        Title = "$($window.findName("TabChildContainer").SelectedItem.Header) - $($CONF.AppName) $((Get-ItemProperty $PSCommandPath).LastWriteTime.ToString("yyyy/MM/dd") + "版")"
+    }
 })
 
 function addNewTab {
@@ -482,6 +486,10 @@ function updateComboBox {
 
     $window.findName("TabChildContainer").SelectedItem.Header = "未選択"
 
+    $window.DataContext = [PSCustomObject]@{
+        Title = "$($window.findName("TabChildContainer").SelectedItem.Header) - $($CONF.AppName) $((Get-ItemProperty $PSCommandPath).LastWriteTime.ToString("yyyy/MM/dd") + "版")"
+    }
+
     $serverCombo = $Content.findName("serverComboBox")
     if($serverCombo.Items.Count -eq 1 -and $null -eq $serverCombo.SelectedItem) {
         Write-Debug ("　" + $serverCombo.Items[0].ToString() + "を選択しました")
@@ -538,6 +546,10 @@ function openSql {
     $tabContainer.SelectedItem.ToolTip = $sqlFullPath
 
     $window.findName("TabChildContainer").SelectedItem.Header = (Split-Path $sqlFullPath -Leaf)
+
+    $window.DataContext = [PSCustomObject]@{
+        Title = "$($window.findName("TabChildContainer").SelectedItem.Header) - $($CONF.AppName) $((Get-ItemProperty $PSCommandPath).LastWriteTime.ToString("yyyy/MM/dd") + "版")"
+    }
 
     $params = [ordered]@{}
 	
