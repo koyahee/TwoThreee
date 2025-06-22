@@ -686,9 +686,9 @@ function execQuery {
 	#SQLの変数を値に置換
 	foreach($key in $params.Keys) {
 		if($params[$key] -eq "") {
-			$val = "'%'"
+			$val = "''"
 		} elseif($null -eq $params[$key]) {
-			$val = "'%'"
+			$val = "''"
 		} else {
 			$val = "'" + $params[$key] + "'"
 		}
